@@ -1,0 +1,7 @@
+build/
+temp/
+logfile.log
+node_modules/
+Nakama Local Setup/
+.vs/
+.editorconfig

@@ -1,0 +1,18 @@
+name: nakama-node-1
+data_dir: './data/'
+
+logger:
+  #stdout: false
+  level: 'DEBUG'
+  file: '/nakama/data/logfile.log'
+
+runtime:
+  js_entrypoint: 'build/index.js'
+
+session:
+  token_expiry_sec: 7200 # 2 hours
+
+console:
+  port: 7351
+  username: 'admin'
+  password: 'password'
