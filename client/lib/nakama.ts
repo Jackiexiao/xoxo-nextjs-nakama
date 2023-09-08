@@ -16,7 +16,7 @@ class Nakama {
     public gameState: GameState = new GameState();
 
     constructor() {
-        this.client = new Client("defaultkey", process.env.NEXT_PUBLIC_SERVER_API, "7350", this.useSSL);
+        this.client = new Client("defaultkey", process.env.NEXT_PUBLIC_SERVER_API, process.env.NEXT_PUBLIC_SERVER_PORT, this.useSSL);
     }
 
     async authenticate(): Promise<void> {
@@ -32,7 +32,6 @@ class Nakama {
         }
         catch (err: any) {
             console.log("Error authenticating device: %o:%o", err.statusCode, err.message);
-            console.log("Nakama Error:", await err.json());
         }
         if (!this.session?.user_id) return;
         localStorage.setItem("user_id", this.session.user_id);
