@@ -9,10 +9,14 @@ export const siteConfig = {
       title: "Home",
       href: "/",
     },
+    {
+      title: "Game",
+      href: "/tictactoe",
+    },
   ],
   links: {
     twitter: "https://twitter.com/realjackiexiao",
     github: "https://github.com/Jackiexiao/xoxo-nextjs-nakama",
-    // docs: "https://ui.shadcn.com",
+    docs: "https://ui.shadcn.com",
   },
 }

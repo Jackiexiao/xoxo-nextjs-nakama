@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 import Board from '@/components/board';
 
 export default function TicTacToePage() {

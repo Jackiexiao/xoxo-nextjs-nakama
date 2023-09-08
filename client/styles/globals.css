@@ -88,7 +88,7 @@
   }
 
   .square {
-    @apply flex h-[90px] w-[90px] md:h-[100px] md:w-[100px] items-center justify-center bg-[#1f3540] rounded-2xl shadow-md active:scale-125 transition duration-200 ease-in hover:bg-[#18272e] shadow-gray-400/30;
+    @apply flex h-[90px] w-[90px] md:h-[100px] md:w-[100px] items-center justify-center bg-[#1f3540] rounded-2xl shadow-md active:scale-125 transition duration-200 ease-in hover:bg-[#18272e] shadow-gray-400/30 text-white text-3xl;
   }
 
   .board {

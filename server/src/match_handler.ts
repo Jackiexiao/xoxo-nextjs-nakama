@@ -41,7 +41,7 @@ interface State {
     // Ticks where no actions have occurred.
     emptyTicks: number
     // Currently connected users, or reserved spaces.
-    presences: {[userId: string]: nkruntime.Presence | null}
+    presences: { [userId: string]: nkruntime.Presence | null }
     // Number of users currently in the process of connecting to the match.
     joinsInProgress: number
     // True if there's a game currently in progress.
@@ -49,7 +49,7 @@ interface State {
     // Current state of the board.
     board: Board
     // Mark assignments to player user IDs.
-    marks: {[userId: string]: Mark | null}
+    marks: { [userId: string]: Mark | null }
     // Whose turn it currently is.
     mark: Mark
     // Ticks until they must submit their move.
@@ -62,7 +62,7 @@ interface State {
     nextGameRemainingTicks: number
 }
 
-let matchInit: nkruntime.MatchInitFunction<State> = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, params: {[key: string]: string}) {
+let matchInit: nkruntime.MatchInitFunction<State> = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, params: { [key: string]: string }) {
     const fast = !!params['fast'];
 
     var label: MatchLabel = {
@@ -95,7 +95,7 @@ let matchInit: nkruntime.MatchInitFunction<State> = function (ctx: nkruntime.Con
     }
 }
 
-let matchJoinAttempt: nkruntime.MatchJoinAttemptFunction<State> = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: State, presence: nkruntime.Presence, metadata: {[key: string]: any}) {
+let matchJoinAttempt: nkruntime.MatchJoinAttemptFunction<State> = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: State, presence: nkruntime.Presence, metadata: { [key: string]: any }) {
     // Check if it's a user attempting to rejoin after a disconnect.
     if (presence.userId in state.presences) {
         if (state.presences[presence.userId] === null) {
@@ -132,7 +132,7 @@ let matchJoinAttempt: nkruntime.MatchJoinAttemptFunction<State> = function (ctx:
     }
 }
 
-let matchJoin: nkruntime.MatchJoinFunction<State> = function(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: State, presences: nkruntime.Presence[]) {
+let matchJoin: nkruntime.MatchJoinFunction<State> = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: State, presences: nkruntime.Presence[]) {
     const t = msecToSec(Date.now());
 
     for (const presence of presences) {
@@ -146,7 +146,7 @@ let matchJoin: nkruntime.MatchJoinFunction<State> = function(ctx: nkruntime.Cont
             let update: UpdateMessage = {
                 board: state.board,
                 mark: state.mark,
-                deadline: t + Math.floor(state.deadlineRemainingTicks/tickRate),
+                deadline: t + Math.floor(state.deadlineRemainingTicks / tickRate),
             }
             // Send a message to the user that just joined.
             dispatcher.broadcastMessage(OpCode.UPDATE, JSON.stringify(update));
@@ -158,7 +158,7 @@ let matchJoin: nkruntime.MatchJoinFunction<State> = function(ctx: nkruntime.Cont
                 board: state.board,
                 winner: state.winner,
                 winnerPositions: state.winnerPositions,
-                nextGameStart: t + Math.floor(state.nextGameRemainingTicks/tickRate)
+                nextGameStart: t + Math.floor(state.nextGameRemainingTicks / tickRate)
             }
             // Send a message to the user that just joined.
             dispatcher.broadcastMessage(OpCode.DONE, JSON.stringify(done))
@@ -172,19 +172,19 @@ let matchJoin: nkruntime.MatchJoinFunction<State> = function(ctx: nkruntime.Cont
         dispatcher.matchLabelUpdate(labelJSON);
     }
 
-    return {state};
+    return { state };
 }
 
-let matchLeave: nkruntime.MatchLeaveFunction<State> = function(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: State, presences: nkruntime.Presence[]) {
+let matchLeave: nkruntime.MatchLeaveFunction<State> = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: State, presences: nkruntime.Presence[]) {
     for (let presence of presences) {
         logger.info("Player: %s left match: %s.", presence.userId, ctx.matchId);
         state.presences[presence.userId] = null;
     }
 
-    return {state};
+    return { state };
 }
 
-let matchLoop: nkruntime.MatchLoopFunction<State> = function(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: State, messages: nkruntime.MatchMessage[]) {
+let matchLoop: nkruntime.MatchLoopFunction<State> = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: State, messages: nkruntime.MatchMessage[]) {
     logger.debug('Running match loop. Tick: %d', tick);
 
     if (connectedPlayers(state) + state.joinsInProgress === 0) {
@@ -196,7 +196,8 @@ let matchLoop: nkruntime.MatchLoopFunction<State> = function(ctx: nkruntime.Cont
         }
     }
 
-    let t = msecToSec(Date.now());
+    // let t = msecToSec(Date.now());
+    let t = 0; // avoid time zone problem
 
     // If there's no game in progress check if we can (and should) start one!
     if (!state.playing) {
@@ -308,7 +309,7 @@ let matchLoop: nkruntime.MatchLoopFunction<State> = function(ctx: nkruntime.Cont
                     let msg: UpdateMessage = {
                         board: state.board,
                         mark: state.mark,
-                        deadline: t + Math.floor(state.deadlineRemainingTicks/tickRate),
+                        deadline: t + Math.floor(state.deadlineRemainingTicks / tickRate),
                     }
                     outgoingMsg = msg;
                 } else {
@@ -317,7 +318,7 @@ let matchLoop: nkruntime.MatchLoopFunction<State> = function(ctx: nkruntime.Cont
                         board: state.board,
                         winner: state.winner,
                         winnerPositions: state.winnerPositions,
-                        nextGameStart: t + Math.floor(state.nextGameRemainingTicks/tickRate),
+                        nextGameStart: t + Math.floor(state.nextGameRemainingTicks / tickRate),
                     }
                     outgoingMsg = msg;
                 }
@@ -333,7 +334,7 @@ let matchLoop: nkruntime.MatchLoopFunction<State> = function(ctx: nkruntime.Cont
     // Keep track of the time remaining for the player to submit their move. Idle players forfeit.
     if (state.playing) {
         state.deadlineRemainingTicks--;
-        if (state.deadlineRemainingTicks <= 0 ) {
+        if (state.deadlineRemainingTicks <= 0) {
             // The player has run out of time to submit their move.
             state.playing = false;
             state.winner = state.mark === Mark.O ? Mark.X : Mark.O;
@@ -343,7 +344,7 @@ let matchLoop: nkruntime.MatchLoopFunction<State> = function(ctx: nkruntime.Cont
             let msg: DoneMessage = {
                 board: state.board,
                 winner: state.winner,
-                nextGameStart: t + Math.floor(state.nextGameRemainingTicks/tickRate),
+                nextGameStart: t + Math.floor(state.nextGameRemainingTicks / tickRate),
                 winnerPositions: null,
             }
             dispatcher.broadcastMessage(OpCode.DONE, JSON.stringify(msg));
@@ -353,11 +354,11 @@ let matchLoop: nkruntime.MatchLoopFunction<State> = function(ctx: nkruntime.Cont
     return { state };
 }
 
-let matchTerminate: nkruntime.MatchTerminateFunction<State> = function(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: State, graceSeconds: number) {
+let matchTerminate: nkruntime.MatchTerminateFunction<State> = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: State, graceSeconds: number) {
     return { state };
 }
 
-let matchSignal: nkruntime.MatchSignalFunction<State> = function(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: State) {
+let matchSignal: nkruntime.MatchSignalFunction<State> = function (ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama, dispatcher: nkruntime.MatchDispatcher, tick: number, state: State) {
     return { state };
 }
 
@@ -370,7 +371,7 @@ function calculateDeadlineTicks(l: MatchLabel): number {
 }
 
 function winCheck(board: Board, mark: Mark): [boolean, Mark[] | null] {
-    for(let wp of winningPositions) {
+    for (let wp of winningPositions) {
         if (board[wp[0]] === mark &&
             board[wp[1]] === mark &&
             board[wp[2]] === mark) {
@@ -383,7 +384,7 @@ function winCheck(board: Board, mark: Mark): [boolean, Mark[] | null] {
 
 function connectedPlayers(s: State): number {
     let count = 0;
-    for(const p of Object.keys(s.presences)) {
+    for (const p of Object.keys(s.presences)) {
         if (s.presences[p] !== null) {
             count++;
         }

@@ -1,25 +1,25 @@
 interface SquareProps {
-    value: number | null; // Adjust the type as needed
-    onSquareClick: () => void;
+  value: number | null; // Adjust the type as needed
+  onSquareClick: () => void;
 }
 
 const Square: React.FC<SquareProps> = ({ value, onSquareClick }) => {
-    let charColor: string;
-    if (value === 1) {
-        charColor = "O";
-    } else if (value === 0) {
-        charColor = "X";
-    } else {
-        charColor = "";
-    }
+  let content: string;
+  if (value === 1) {
+    content = 'O';
+  } else if (value === 0) {
+    content = 'X';
+  } else {
+    content = '';
+  }
 
-
-    return <button
-        className="square"
-        onClick={onSquareClick}
-    >
-        {charColor}
-    </button>;
+  return (
+    <>
+      <div className='square' onClick={onSquareClick}>
+        {content}
+      </div>
+    </>
+  );
 };
 
 export default Square;
