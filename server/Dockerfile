@@ -15,4 +15,4 @@ RUN npx tsc
 FROM registry.heroiclabs.com/heroiclabs/nakama:3.17.0
 
 COPY --from=node-builder /backend/build/*.js /nakama/data/modules/build/
-COPY data/my-config.yml /nakama/data/
+COPY data/local.yml /nakama/data/

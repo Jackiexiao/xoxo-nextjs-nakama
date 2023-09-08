@@ -69,10 +69,10 @@ export default function Game() {
             setPlayerTurn(updateMessage.mark);
             setSquares(updateMessage.board);
             setDeadline(updateMessage.deadline);
-            setTimeLeft(updateMessage.deadline - Date.now());
             break;
           case OpCode.DONE:
             const doneMessage = json as DoneMessage;
+            setDeadline(doneMessage.nextGameStart);
             setGameStarted(false);
             setSquares(doneMessage.board);
             setPlayerTurn(-1);
@@ -180,7 +180,9 @@ export default function Game() {
 
       {deadline !== null && (
         <div className='text-center'>
-          <div className='text-sm text-gray-500'>Time left:</div>
+          <div className='text-sm text-gray-500'>
+            {gameStarted ? 'Time left:' : 'Game will start after: '}
+          </div>
           <div className='text-2xl font-bold'>
             {timeLeft > 0
               ? new Date(timeLeft).toISOString().substr(14, 5)

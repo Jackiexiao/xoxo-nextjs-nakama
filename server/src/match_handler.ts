@@ -196,8 +196,7 @@ let matchLoop: nkruntime.MatchLoopFunction<State> = function (ctx: nkruntime.Con
         }
     }
 
-    // let t = msecToSec(Date.now());
-    let t = 0; // avoid time zone problem
+    let t = msecToSec(Date.now());
 
     // If there's no game in progress check if we can (and should) start one!
     if (!state.playing) {
