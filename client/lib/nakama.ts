@@ -12,11 +12,10 @@ class Nakama {
     public session: Session | null = null;
     public socket: Socket | null = null;
     public matchId: string | null = null;
-    public useSSL: boolean = false;
     public gameState: GameState = new GameState();
 
     constructor() {
-        this.client = new Client("defaultkey", process.env.NEXT_PUBLIC_SERVER_API, process.env.NEXT_PUBLIC_SERVER_PORT, this.useSSL);
+        this.client = new Client("defaultkey", process.env.NEXT_PUBLIC_SERVER_API, process.env.NEXT_PUBLIC_SERVER_PORT, process.env.NEXT_PUBLIC_USE_SSL === "true");
     }
 
     async authenticate(): Promise<void> {
@@ -37,7 +36,7 @@ class Nakama {
         localStorage.setItem("user_id", this.session.user_id);
 
         const trace = false;
-        this.socket = this.client.createSocket(this.useSSL, trace);
+        this.socket = this.client.createSocket(process.env.NEXT_PUBLIC_USE_SSL === "true", trace);
         await this.socket.connect(this.session, true);
     }
 
